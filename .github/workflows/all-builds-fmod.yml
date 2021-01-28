@@ -71,8 +71,8 @@ jobs:
           scons platform=windows target=${{env.TARGET}} bits=32
           mkdir -p bin/x86
           mkdir -p bin/x86_64
-          mv bin/libGodotFmod.linux.release.32.dll bin/x86/libGodotFmod.linux.release.32.dll
-          mv bin/libGodotFmod.linux.release.64.dll bin/x86_64/libGodotFmod.linux.release.64.dll
+          mv bin/libGodotFmod.windows.release.32.dll bin/x86/libGodotFmod.windows.release.32.dll
+          mv bin/libGodotFmod.windows.release.64.dll bin/x86_64/libGodotFmod.windows.release.64.dll
           cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86_64/libfmod.dll bin/x86_64/libfmod.dll
           cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86_64/libfmodstudio.dll bin/x86_64/libfmodstudio.dll
           cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86/libfmod.dll bin/x86/libfmod.dll
@@ -217,7 +217,7 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=osx target=${{env.TARGET}}
           mkdir -p bin/x86_64
-          mv bin/libGodotFmod.linux.release.64.dylib bin/x86_64/libGodotFmod.linux.release.64.dylib
+          mv bin/libGodotFmod.osx.release.64.dylib bin/x86_64/libGodotFmod.osx.release.64.dylib
           cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/x86_64/libfmod.dylib bin/x86_64/libfmod.dylib
           cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/x86_64/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
       - name: Upload Artifact
