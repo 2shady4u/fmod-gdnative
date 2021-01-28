@@ -1,4 +1,4 @@
-name: All Builds With Fmod Libs
+name: 🌈 All Builds With Fmod Libs
 on:
   push:
     branches: [ master, add-github-actions, implementing-todo-list ]
@@ -349,7 +349,7 @@ jobs:
           path: |
             bin
             ios/core/lib
-           ios/studio/lib
+            ios/studio/lib
   release:
     name: Release
     runs-on: "ubuntu-20.04"
