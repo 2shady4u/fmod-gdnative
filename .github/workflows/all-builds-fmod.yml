@@ -69,10 +69,6 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=windows target=${{env.TARGET}}
           scons platform=windows target=${{env.TARGET}} bits=32
-          cd ../
-          ls
-          cd ${{env.PROJECT_FOLDER}}
-          ls
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -144,6 +140,10 @@ jobs:
           scons platform=linux target=${{env.TARGET}} bits=32
           strip --strip-all bin/libGodotFmod.linux.release.64.so
           strip --strip-all bin/libGodotFmod.linux.release.32.so
+          cd ../
+          ls
+          cd ${{env.PROJECT_FOLDER}}
+          ls
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
