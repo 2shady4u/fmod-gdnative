@@ -75,8 +75,7 @@ jobs:
           name: windows
           path: |
             bin
-            windows/core/lib
-            windows/studio/lib
+            ../
   linux-compilation:
     name: Linux Compilation
     runs-on: "ubuntu-20.04"
@@ -148,8 +147,7 @@ jobs:
           name: linux
           path: |
             bin
-            linux/core/lib
-            linux/studio/lib
+            ../
   macos-compilation:
     name: MacOS Compilation
     runs-on: "macos-latest"
@@ -210,8 +208,7 @@ jobs:
           name: osx
           path: |
             bin
-            osx/core/lib
-            osx/studio/lib
+            ../
 
   android-compilation:
     name: Android Compilation
@@ -283,8 +280,6 @@ jobs:
           name: android
           path: |
             bin
-            android/core/lib
-            android/studio/lib
   ios-compilation:
     name: iOS Compilation
     runs-on: "macos-latest"
@@ -348,8 +343,7 @@ jobs:
           name: ios
           path: |
             bin
-            ios/core/lib
-            ios/studio/lib
+            ../
   release:
     name: Release
     runs-on: "ubuntu-20.04"
