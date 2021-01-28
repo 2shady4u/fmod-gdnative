@@ -73,7 +73,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows
-          path: bin
+          path: |
+            bin
+            windows/core/lib
+            windows/studio/lib
   linux-compilation:
     name: Linux Compilation
     runs-on: "ubuntu-20.04"
@@ -143,7 +146,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: linux
-          path: bin
+          path: |
+            bin
+            linux/core/lib
+            linux/studio/lib
   macos-compilation:
     name: MacOS Compilation
     runs-on: "macos-latest"
@@ -202,7 +208,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: osx
-          path: bin
+          path: |
+            bin
+            osx/core/lib
+            osx/studio/lib
 
   android-compilation:
     name: Android Compilation
@@ -272,7 +281,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: android
-          path: bin
+          path: |
+            bin
+            android/core/lib
+            android/studio/lib
   ios-compilation:
     name: iOS Compilation
     runs-on: "macos-latest"
@@ -334,7 +346,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios
-          path: bin
+          path: |
+            bin
+            ios/core/lib
+           ios/studio/lib
   release:
     name: Release
     runs-on: "ubuntu-20.04"
