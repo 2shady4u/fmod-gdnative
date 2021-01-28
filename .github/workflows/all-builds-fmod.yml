@@ -1,4 +1,4 @@
-name: 🌈 All Builds With Fmod Libs
+name: All Builds With Fmod Libs
 on:
   push:
     branches: [ master, add-github-actions, implementing-todo-list ]
