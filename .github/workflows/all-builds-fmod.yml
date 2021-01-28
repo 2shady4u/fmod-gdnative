@@ -69,6 +69,14 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=windows target=${{env.TARGET}}
           scons platform=windows target=${{env.TARGET}} bits=32
+          mkdir -p bin/x86
+          mkdir -p bin/x86_64
+          mv bin/libGodotFmod.linux.release.32.dll bin/x86/libGodotFmod.linux.release.32.dll
+          mv bin/libGodotFmod.linux.release.64.dll bin/x86_64/libGodotFmod.linux.release.64.dll
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86_64/libfmod.dll bin/x86_64/libfmod.dll
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86_64/libfmodstudio.dll bin/x86_64/libfmodstudio.dll
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86/libfmod.dll bin/x86/libfmod.dll
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86/libfmodstudio.dll bin/x86/libfmodstudio.dll
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -144,10 +152,10 @@ jobs:
           mv bin/libGodotFmod.linux.release.64.so bin/x86_64/libGodotFmod.linux.release.64.so
           strip --strip-all bin/x86_64/libGodotFmod.linux.release.64.so
           strip --strip-all bin/x86/libGodotFmod.linux.release.32.so
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86_64/ bin/x86_64
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/ bin/x86_64
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86/ bin/x86
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86/ bin/x86
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86_64/libfmod.so bin/x86_64/libfmod.so
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/libfmodstudio.so bin/x86_64/libfmodstudio.so
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86/libfmod.so bin/x86/libfmod.so
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86/libfmodstudio.so bin/x86/libfmodstudio.so
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -208,6 +216,10 @@ jobs:
           scons platform=osx bits=64 target=${{env.TARGET}} generate_bindings=yes -j4
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=osx target=${{env.TARGET}}
+          mkdir -p bin/x86_64
+          mv bin/libGodotFmod.linux.release.64.dylib bin/x86_64/libGodotFmod.linux.release.64.dylib
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/x86_64/libfmod.dylib bin/x86_64/libfmod.dylib
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/x86_64/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -348,39 +360,3 @@ jobs:
           name: ios
           path: |
             bin
-  release:
-    name: Release
-    runs-on: "ubuntu-20.04"
-    needs: [windows-compilation, linux-compilation, macos-compilation, ios-compilation, android-compilation]
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-    steps:
-      - name: Zip releases
-        run: |
-          zip -r all_platforms.zip bin/
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-
-      - name: Download Artefacts
-        uses: actions/download-artifact@v2
-
-      - name: Upload Windows 64bit Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: all_platforms.zip
-          asset_name: all_platforms.zip
-          asset_content_type: application/zip
