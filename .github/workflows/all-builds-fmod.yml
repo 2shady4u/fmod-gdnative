@@ -140,10 +140,8 @@ jobs:
           scons platform=linux target=${{env.TARGET}} bits=32
           strip --strip-all bin/libGodotFmod.linux.release.64.so
           strip --strip-all bin/libGodotFmod.linux.release.32.so
-          cd ../
-          ls
-          cd ${{env.PROJECT_FOLDER}}
-          ls
+          cp -r libs/fmod/linux/core/lib/x86_64/ bin
+          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/ bin
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
