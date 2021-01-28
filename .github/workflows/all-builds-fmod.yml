@@ -69,13 +69,16 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=windows target=${{env.TARGET}}
           scons platform=windows target=${{env.TARGET}} bits=32
+          cd ../
+          ls
+          cd ${{env.PROJECT_FOLDER}}
+          ls
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: windows
           path: |
             bin
-            ../windows
   linux-compilation:
     name: Linux Compilation
     runs-on: "ubuntu-20.04"
@@ -147,7 +150,6 @@ jobs:
           name: linux
           path: |
             bin
-            ../linux
   macos-compilation:
     name: MacOS Compilation
     runs-on: "macos-latest"
@@ -208,7 +210,6 @@ jobs:
           name: osx
           path: |
             bin
-            ../osx
 
   android-compilation:
     name: Android Compilation
@@ -343,7 +344,6 @@ jobs:
           name: ios
           path: |
             bin
-            ../iso
   release:
     name: Release
     runs-on: "ubuntu-20.04"
