@@ -73,10 +73,10 @@ jobs:
           mkdir -p bin/x86_64
           mv bin/libGodotFmod.windows.release.32.dll bin/x86/libGodotFmod.windows.release.32.dll
           mv bin/libGodotFmod.windows.release.64.dll bin/x86_64/libGodotFmod.windows.release.64.dll
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86_64/libfmod.dll bin/x86_64/libfmod.dll
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86_64/libfmodstudio.dll bin/x86_64/libfmodstudio.dll
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86/libfmod.dll bin/x86/libfmod.dll
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86/libfmodstudio.dll bin/x86/libfmodstudio.dll
+          cp /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86_64/libfmod.dll bin/x86_64/libfmod.dll
+          cp /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86_64/libfmodstudio.dll bin/x86_64/libfmodstudio.dll
+          cp /home/runner/work/fmod-gdnative/libs/fmod/windows/core/lib/x86/libfmod.dll bin/x86/libfmod.dll
+          cp /home/runner/work/fmod-gdnative/libs/fmod/windows/studio/lib/x86/libfmodstudio.dll bin/x86/libfmodstudio.dll
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -152,10 +152,10 @@ jobs:
           mv bin/libGodotFmod.linux.release.64.so bin/x86_64/libGodotFmod.linux.release.64.so
           strip --strip-all bin/x86_64/libGodotFmod.linux.release.64.so
           strip --strip-all bin/x86/libGodotFmod.linux.release.32.so
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86_64/libfmod.so bin/x86_64/libfmod.so
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/libfmodstudio.so bin/x86_64/libfmodstudio.so
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86/libfmod.so bin/x86/libfmod.so
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86/libfmodstudio.so bin/x86/libfmodstudio.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86_64/libfmod.so bin/x86_64/libfmod.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/libfmodstudio.so bin/x86_64/libfmodstudio.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86/libfmod.so bin/x86/libfmod.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86/libfmodstudio.so bin/x86/libfmodstudio.so
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -218,8 +218,8 @@ jobs:
           scons platform=osx target=${{env.TARGET}}
           mkdir -p bin/x86_64
           mv bin/libGodotFmod.osx.release.64.dylib bin/x86_64/libGodotFmod.osx.release.64.dylib
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/x86_64/libfmod.dylib bin/x86_64/libfmod.dylib
-          cp -r /home/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/x86_64/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
+          cp /home/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/x86_64/libfmod.dylib bin/x86_64/libfmod.dylib
+          cp /home/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/x86_64/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
