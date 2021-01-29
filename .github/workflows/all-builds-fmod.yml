@@ -73,14 +73,14 @@ jobs:
           mkdir -p bin/x86_64
           mv bin/libGodotFmod.windows.release.32.dll bin/x86/libGodotFmod.windows.release.32.dll
           mv bin/libGodotFmod.windows.release.64.dll bin/x86_64/libGodotFmod.windows.release.64.dll
-          cp ../libs/fmod/windows/core/lib/x86/fmod_vc.dll bin/x86/fmod_vc.dll
-          cp ../libs/fmod/windows/studio/lib/x86/fmodstudio_vc.dll bin/x86/fmodstudio_vc.dll
-          cp ../libs/fmod/windows/core/lib/x64/fmod_vc.dll bin/x86_64/fmod_vc.dll
-          cp ../libs/fmod/windows/studio/lib/x64/fmodstudio_vc.dll bin/x86_64/fmodstudio_vc.dll
-          cp ../libs/fmod/windows/core/lib/x86/fmod_vc.dll bin/x86/fmod.dll
-          cp ../libs/fmod/windows/studio/lib/x86/fmodstudio_vc.dll bin/x86/fmodstudio.dll
-          cp ../libs/fmod/windows/core/lib/x64/fmod_vc.dll bin/x86_64/fmod.dll
-          cp ../libs/fmod/windows/studio/lib/x64/fmodstudio_vc.dll bin/x86_64/fmodstudio.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x86/fmod_vc.lib bin/x86/fmod_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x86/fmodstudio_vc.lib bin/x86/fmodstudio_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x64/fmod_vc.lib bin/x86_64/fmod_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x64/fmodstudio_vc.lib bin/x86_64/fmodstudio_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x86/fmod.dll bin/x86/fmod.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x86/fmodstudio.dll bin/x86/fmodstudio.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x64/fmod.dll bin/x86_64/fmod.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x64/fmodstudio.dll bin/x86_64/fmodstudio.dll
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -222,8 +222,8 @@ jobs:
           scons platform=osx target=${{env.TARGET}}
           mkdir -p bin/x86_64
           mv bin/libGodotFmod.osx.release.64.dylib bin/x86_64/libGodotFmod.osx.release.64.dylib
-          cp  ../libs/fmod/osx/core/lib/fmod.dylib bin/x86_64/fmod.dylib
-          cp  ../libs/fmod/osx/studio/lib/fmodstudio.dylib bin/x86_64/fmodstudio.dylib
+          cp  /Users/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/libfmod.dylib bin/x86_64/libfmod.dylib
+          cp  /Users/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
