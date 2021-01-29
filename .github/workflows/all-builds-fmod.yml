@@ -73,10 +73,14 @@ jobs:
           mkdir -p bin/x86_64
           mv bin/libGodotFmod.windows.release.32.dll bin/x86/libGodotFmod.windows.release.32.dll
           mv bin/libGodotFmod.windows.release.64.dll bin/x86_64/libGodotFmod.windows.release.64.dll
-          cp ${{env.PROJECT_FOLDER}}/libs/fmod/windows/core/lib/x86/fmod.dll bin/x86/fmod.dll
-          cp ${{env.PROJECT_FOLDER}}/libs/fmod/windows/studio/lib/x86/fmodstudio.dll bin/x86/fmodstudio.dll
-          cp ${{env.PROJECT_FOLDER}}/libs/fmod/windows/core/lib/x64/fmod.dll bin/x86_64/fmod.dll
-          cp ${{env.PROJECT_FOLDER}}/libs/fmod/windows/studio/lib/x64/fmodstudio.dll bin/x86_64/fmodstudio.dll
+          cp ../libs/fmod/windows/core/lib/x86/fmod_vc.dll bin/x86/fmod_vc.dll
+          cp ../libs/fmod/windows/studio/lib/x86/fmodstudio_vc.dll bin/x86/fmodstudio_vc.dll
+          cp ../libs/fmod/windows/core/lib/x64/fmod_vc.dll bin/x86_64/fmod_vc.dll
+          cp ../libs/fmod/windows/studio/lib/x64/fmodstudio_vc.dll bin/x86_64/fmodstudio_vc.dll
+          cp ../libs/fmod/windows/core/lib/x86/fmod_vc.dll bin/x86/fmod.dll
+          cp ../libs/fmod/windows/studio/lib/x86/fmodstudio_vc.dll bin/x86/fmodstudio.dll
+          cp ../libs/fmod/windows/core/lib/x64/fmod_vc.dll bin/x86_64/fmod.dll
+          cp ../libs/fmod/windows/studio/lib/x64/fmodstudio_vc.dll bin/x86_64/fmodstudio.dll
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -217,12 +221,9 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=osx target=${{env.TARGET}}
           mkdir -p bin/x86_64
-          cd  ${{env.PROJECT_FOLDER}}/libs
-          tree
-          cd  ${{env.PROJECT_FOLDER}}
           mv bin/libGodotFmod.osx.release.64.dylib bin/x86_64/libGodotFmod.osx.release.64.dylib
-          cp  ${{env.PROJECT_FOLDER}}/libs/fmod/osx/core/lib/x86_64/fmod.dylib bin/x86_64/fmod.dylib
-          cp  ${{env.PROJECT_FOLDER}}/libs/fmod/osx/studio/lib/x86_64/fmodstudio.dylib bin/x86_64/fmodstudio.dylib
+          cp  ../libs/fmod/osx/core/lib/fmod.dylib bin/x86_64/fmod.dylib
+          cp  ../libs/fmod/osx/studio/lib/fmodstudio.dylib bin/x86_64/fmodstudio.dylib
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -355,6 +356,8 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=ios ios_arch=arm64 target=${{env.TARGET}}
           cp "../godot-cpp/bin/libgodot-cpp.ios.release.arm64.a" "bin/libgodot-cpp.ios.release.arm64.a"
+          cp  ../libs/fmod/ios/core/lib/libfmod_iphoneos.a bin/libfmod_iphoneos.a
+          cp  ../libs/fmod/ios/studio/lib/libfmodstudio_iphoneos.a bin/libfmodstudio_iphoneos.a
       # Unfortunately the `upload-artefact@v2`-action doesn't allow the use of . or ..
       # So we have to use the full path to the compiled godot-cpp library here.
       - name: Upload Artifact
