@@ -17,7 +17,7 @@ jobs:
     name: Windows Compilation
     runs-on: "windows-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002win-installer.exe
+      FMOD_EXECUTABLE: fmodstudioapi20107win-installer.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
     name: Linux Compilation
     runs-on: "ubuntu-20.04"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002linux.tar.gz
+      FMOD_EXECUTABLE: fmodstudioapi20107linux.tar.gz
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -154,7 +154,7 @@ jobs:
     name: MacOS Compilation
     runs-on: "macos-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002osx.dmg
+      FMOD_EXECUTABLE: fmodstudioapi20107mac-installer.dmg
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -214,7 +214,7 @@ jobs:
     name: Android Compilation
     runs-on: "ubuntu-20.04"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002android.tar.gz
+      FMOD_EXECUTABLE: fmodstudioapi20107android.tar.gz
     steps:
       - name: Checkout
         uses: actions/checkout@v2 
@@ -287,7 +287,7 @@ jobs:
     name: iOS Compilation
     runs-on: "macos-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002ios.dmg
+      FMOD_EXECUTABLE: fmodstudioapi20107ios.dmg
     steps:
       - name: Checkout
         uses: actions/checkout@v2
