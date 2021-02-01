@@ -11,24 +11,24 @@ fmodlink = "https://www.fmod.com/api-login"
 
 if platform == 'linux':
     # linux
-    filename = 'fmodstudioapi20002linux.tar.gz'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Linux/&filename=fmodstudioapi20002linux.tar.gz&user='
+    filename = 'fmodstudioapi20107linux.tar.gz'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Linux/&filename=fmodstudioapi20107linux.tar.gz&user='
 elif platform == 'osx':
     # OS X
-    filename = 'fmodstudioapi20002osx.dmg'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Mac/&filename=fmodstudioapi20002mac-installer.dmg&user='
+    filename = 'fmodstudioapi20107mac-installer.dmg'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Mac/&filename=fmodstudioapi20107mac-installer.dmg&user='
 elif platform == 'windows':
     # Windows...
-    filename = 'fmodstudioapi20002win-installer.exe'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Win/&filename=fmodstudioapi20002win-installer.exe&user='
+    filename = 'fmodstudioapi20107win-installer.exe'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Win/&filename=fmodstudioapi20107win-installer.exe&user='
 elif platform == 'android':
     # Android...
-    filename = 'fmodstudioapi20002android.tar.gz'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Android/&filename=fmodstudioapi20002android.tar.gz&user='
+    filename = 'fmodstudioapi20107android.tar.gz'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/Android/&filename=fmodstudioapi20107android.tar.gz&user='
 elif platform == 'ios':
     # iOS...
-    filename = 'fmodstudioapi20002ios.dmg'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/iOS/&filename=fmodstudioapi20002ios-installer.dmg&user=$1'
+    filename = 'fmodstudioapi20107ios.dmg'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/iOS/&filename=fmodstudioapi20107ios-installer.dmg&user=$1'
 
 downloadlink += user
 

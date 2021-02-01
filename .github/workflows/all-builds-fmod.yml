@@ -1,4 +1,4 @@
-name: 🌈 All Builds
+name: 🌈 All Builds With Fmod Libs
 on:
   push:
     branches: [ master, add-github-actions, implementing-todo-list ]
@@ -6,7 +6,7 @@ on:
       - "v*"
   pull_request:
     branches: "*"
-
+  workflow_dispatch:
 # Global Settings
 env:
   PROJECT_FOLDER: fmod-gdnative
@@ -17,7 +17,7 @@ jobs:
     name: Windows Compilation
     runs-on: "windows-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002win-installer.exe
+      FMOD_EXECUTABLE: fmodstudioapi20107win-installer.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,7 +40,6 @@ jobs:
           python -m pip install scons pywin32 requests
           python --version
           scons --version
-
       - name : Installing FMOD
         run: |
           cd ..
@@ -50,7 +49,6 @@ jobs:
           7z x ${{env.FMOD_EXECUTABLE}}
           mv api/ windows
           cd ../../
-
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
       # For now we'll have to copy the `godot-cpp`-repository ourselves!
@@ -67,20 +65,33 @@ jobs:
           Copy-Item -Path "./godot-cpp/" -Destination "../godot-cpp/" -Recurse
           cd ../godot-cpp
           scons platform=windows bits=64 target=${{env.TARGET}} generate_bindings=yes -j4
+          scons platform=windows bits=32 target=${{env.TARGET}} generate_bindings=yes -j4
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=windows target=${{env.TARGET}}
-
+          scons platform=windows target=${{env.TARGET}} bits=32
+          mkdir -p bin/x86
+          mkdir -p bin/x86_64
+          mv bin/libGodotFmod.windows.release.32.dll bin/x86/libGodotFmod.windows.release.32.dll
+          mv bin/libGodotFmod.windows.release.64.dll bin/x86_64/libGodotFmod.windows.release.64.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x86/fmod_vc.lib bin/x86/fmod_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x86/fmodstudio_vc.lib bin/x86/fmodstudio_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x64/fmod_vc.lib bin/x86_64/fmod_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x64/fmodstudio_vc.lib bin/x86_64/fmodstudio_vc.lib
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x86/fmod.dll bin/x86/fmod.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x86/fmodstudio.dll bin/x86/fmodstudio.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/core/lib/x64/fmod.dll bin/x86_64/fmod.dll
+          cp D:/a/fmod-gdnative/libs/fmod/windows/studio/lib/x64/fmodstudio.dll bin/x86_64/fmodstudio.dll
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: windows
-          path: bin/libGodotFmod.windows.release.64.dll
-
+          path: |
+            bin
   linux-compilation:
     name: Linux Compilation
     runs-on: "ubuntu-20.04"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002linux.tar.gz
+      FMOD_EXECUTABLE: fmodstudioapi20107linux.tar.gz
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -92,8 +103,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
-            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
-
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev gcc-multilib g++-multilib libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
       # Use python 3.x release (works cross platform; best to keep self contained in it's own step)
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
@@ -110,7 +120,6 @@ jobs:
           python -m pip install scons requests
           python --version
           scons --version
-
       - name : Installing FMOD
         run: |
           cd ..
@@ -118,9 +127,8 @@ jobs:
           mkdir fmod && cd fmod
           python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} linux
           tar -xvf ${{env.FMOD_EXECUTABLE}}
-          mv fmodstudioapi20002linux/api linux
+          mv fmodstudioapi20107linux/api linux
           cd ../../
-
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
       # For now we'll have to copy the `godot-cpp`-repository ourselves!
@@ -138,21 +146,31 @@ jobs:
           cp -r godot-cpp ../godot-cpp
           cd ../godot-cpp
           scons platform=linux bits=64 target=${{env.TARGET}} generate_bindings=yes -j4
+          scons platform=linux bits=32 target=${{env.TARGET}} generate_bindings=yes -j4
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=linux target=${{env.TARGET}}
-          strip --strip-all bin/libGodotFmod.linux.release.64.so
-
+          scons platform=linux target=${{env.TARGET}} bits=32
+          mkdir -p bin/x86
+          mkdir -p bin/x86_64
+          mv bin/libGodotFmod.linux.release.32.so bin/x86/libGodotFmod.linux.release.32.so
+          mv bin/libGodotFmod.linux.release.64.so bin/x86_64/libGodotFmod.linux.release.64.so
+          strip --strip-all bin/x86_64/libGodotFmod.linux.release.64.so
+          strip --strip-all bin/x86/libGodotFmod.linux.release.32.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86_64/libfmod.so bin/x86_64/libfmod.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86_64/libfmodstudio.so bin/x86_64/libfmodstudio.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/core/lib/x86/libfmod.so bin/x86/libfmod.so
+          cp /home/runner/work/fmod-gdnative/libs/fmod/linux/studio/lib/x86/libfmodstudio.so bin/x86/libfmodstudio.so
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: linux
-          path: bin/libGodotFmod.linux.release.64.so
-
+          path: |
+            bin
   macos-compilation:
     name: MacOS Compilation
     runs-on: "macos-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002osx.dmg
+      FMOD_EXECUTABLE: fmodstudioapi20107mac-installer.dmg
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -175,7 +193,6 @@ jobs:
           python -m pip install scons requests
           python --version
           scons --version
-
       - name : Installing FMOD
         run: |
           cd ..
@@ -185,7 +202,6 @@ jobs:
           hdiutil attach ${{env.FMOD_EXECUTABLE}}
           cp -r "/Volumes/FMOD Programmers API Mac/FMOD Programmers API/api" osx
           cd ../../
-
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
       # For now we'll have to copy the `godot-cpp`-repository ourselves!
@@ -204,18 +220,22 @@ jobs:
           scons platform=osx bits=64 target=${{env.TARGET}} generate_bindings=yes -j4
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=osx target=${{env.TARGET}}
-
+          mkdir -p bin/x86_64
+          mv bin/libGodotFmod.osx.release.64.dylib bin/x86_64/libGodotFmod.osx.release.64.dylib
+          cp  /Users/runner/work/fmod-gdnative/libs/fmod/osx/core/lib/libfmod.dylib bin/x86_64/libfmod.dylib
+          cp  /Users/runner/work/fmod-gdnative/libs/fmod/osx/studio/lib/libfmodstudio.dylib bin/x86_64/libfmodstudio.dylib
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: osx
-          path: bin/libGodotFmod.osx.release.64.dylib
+          path: |
+            bin
 
   android-compilation:
     name: Android Compilation
     runs-on: "ubuntu-20.04"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002android.tar.gz
+      FMOD_EXECUTABLE: fmodstudioapi20107android.tar.gz
     steps:
       - name: Checkout
         uses: actions/checkout@v2 
@@ -242,7 +262,6 @@ jobs:
           python -m pip install scons requests
           python --version
           scons --version
-
       - name : Installing FMOD
         run: |
           cd ..
@@ -250,9 +269,8 @@ jobs:
           mkdir fmod && cd fmod
           python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} android
           tar -xvf ${{env.FMOD_EXECUTABLE}}
-          mv fmodstudioapi20002android/api android
+          mv fmodstudioapi20107android/api android
           cd ../../
-
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
       # For now we'll have to copy the `godot-cpp`-repository ourselves!
@@ -272,6 +290,8 @@ jobs:
           cd ../godot-cpp
           scons platform=android bits=64 android_arch=armv7 target=${{env.TARGET}} generate_bindings=yes -j4
           scons platform=android bits=64 android_arch=arm64v8 target=${{env.TARGET}} generate_bindings=yes -j4
+          scons platform=android bits=64 android_arch=x86 target=${{env.TARGET}} generate_bindings=yes -j4
+          scons platform=android bits=64 android_arch=x86_64 target=${{env.TARGET}} generate_bindings=yes -j4
           cd ../${{env.PROJECT_FOLDER}}
           $ANDROID_NDK_ROOT/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk APP_PLATFORM=android-21 NDK_LIBS_OUT=bin/
       
@@ -280,14 +300,12 @@ jobs:
         with:
           name: android
           path: |
-            bin/armeabi-v7a/libGodotFmod.android.release.armeabi-v7a.so
-            bin/arm64-v8a/libGodotFmod.android.release.arm64-v8a.so
-
+            bin
   ios-compilation:
     name: iOS Compilation
     runs-on: "macos-latest"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002ios.dmg
+      FMOD_EXECUTABLE: fmodstudioapi20107ios.dmg
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -310,7 +328,6 @@ jobs:
           python -m pip install scons requests
           python --version
           scons --version
-
       - name : Installing FMOD
         run: |
           cd ..
@@ -320,7 +337,6 @@ jobs:
           hdiutil attach ${{env.FMOD_EXECUTABLE}}
           cp -r "/Volumes/FMOD Programmers API iOS/FMOD Programmers API/api" ios
           cd ../../
-
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
       # For now we'll have to copy the `godot-cpp`-repository ourselves!
@@ -340,7 +356,8 @@ jobs:
           cd ../${{env.PROJECT_FOLDER}}
           scons platform=ios ios_arch=arm64 target=${{env.TARGET}}
           cp "../godot-cpp/bin/libgodot-cpp.ios.release.arm64.a" "bin/libgodot-cpp.ios.release.arm64.a"
-
+          cp  ../libs/fmod/ios/core/lib/libfmod_iphoneos.a bin/libfmod_iphoneos.a
+          cp  ../libs/fmod/ios/studio/lib/libfmodstudio_iphoneos.a bin/libfmodstudio_iphoneos.a
       # Unfortunately the `upload-artefact@v2`-action doesn't allow the use of . or ..
       # So we have to use the full path to the compiled godot-cpp library here.
       - name: Upload Artifact
@@ -348,99 +365,4 @@ jobs:
         with:
           name: ios
           path: |
-            bin/libGodotFmod.ios.release.arm64.a
-            bin/libgodot-cpp.ios.release.arm64.a
-
-  release:
-    name: Release
-    runs-on: "ubuntu-20.04"
-    needs: [windows-compilation, linux-compilation, macos-compilation, ios-compilation, android-compilation]
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-
-      - name: Download Artefacts
-        uses: actions/download-artifact@v2
-
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/windows/libGodotFmod.windows.release.64.dll
-          asset_name: libGodotFmod.windows.release.64.dll
-          asset_content_type: application/zip
-      
-      - name: Upload Linux Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/linux/libGodotFmod.linux.release.64.so
-          asset_name: libGodotFmod.linux.release.64.so
-          asset_content_type: application/zip
-      
-      - name: Upload MacOS Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/osx/libGodotFmod.osx.release.64.dylib
-          asset_name: libGodotFmod.osx.release.64.dylib
-          asset_content_type: application/zip
-      
-      - name: Upload Android (armeabi-v7a) Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/android/armeabi-v7a/libGodotFmod.android.release.armeabi-v7a.so
-          asset_name: libGodotFmod.android.release.armeabi-v7a.so
-          asset_content_type: application/zip
-
-      - name: Upload Android (arm64-v8a) Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/android/arm64-v8a/libGodotFmod.android.release.arm64-v8a.so
-          asset_name: libGodotFmod.android.release.arm64-v8a.so
-          asset_content_type: application/zip
-
-      - name: Upload iOS (arm64) Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/ios/libGodotFmod.ios.release.arm64.a
-          asset_name: libGodotFmod.ios.release.arm64.a
-          asset_content_type: application/zip
-      
-      - name: Upload compiled iOS `godot-cpp` bindings
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/fmod-gdnative/fmod-gdnative/ios/libgodot-cpp.ios.release.arm64.a
-          asset_name: libgodot-cpp.ios.release.arm64.a
-          asset_content_type: application/zip
+            bin

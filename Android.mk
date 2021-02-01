@@ -16,6 +16,9 @@ LOCAL_MODULE := godot-prebuilt
 ifeq ($(TARGET_ARCH_ABI),x86)
     LOCAL_SRC_FILES := ../godot-cpp/bin/libgodot-cpp.android.release.x86.a
 endif
+ifeq ($(TARGET_ARCH_ABI),x86_64)
+    LOCAL_SRC_FILES := ../godot-cpp/bin/libgodot-cpp.android.release.x86_64.a
+endif
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_SRC_FILES := ../godot-cpp/bin/libgodot-cpp.android.release.armv7.a
 endif
@@ -33,6 +36,8 @@ LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := \
 src/godot_fmod.cpp \
 src/gdlibrary.cpp \
+src/callback/file_callbacks.cpp \
+src/callback/event_callbacks.cpp \
 
 LOCAL_SHARED_LIBRARIES := \
 fmod-core-prebuilt \
