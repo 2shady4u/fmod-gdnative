@@ -117,7 +117,7 @@ jobs:
           mkdir fmod && cd fmod
           python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} linux
           tar -xvf ${{env.FMOD_EXECUTABLE}}
-          mv fmodstudioapi20002linux/api linux
+          mv fmodstudioapi20107linux/api linux
           cd ../../
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
@@ -248,7 +248,7 @@ jobs:
           mkdir fmod && cd fmod
           python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} android
           tar -xvf ${{env.FMOD_EXECUTABLE}}
-          mv fmodstudioapi20002android/api android
+          mv fmodstudioapi20107android/api android
           cd ../../
       # The `godot-cpp`-repository is currently cloned inside of the project folder.
       # This is a limitation of the checkout action and will be fixed in PR#388...
