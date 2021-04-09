@@ -483,8 +483,8 @@ add_sources(sources, "./src", 'cpp')
 add_sources(sources, "./src/callback", 'cpp')
 if env['platform'] == "javascript":
     sources.append(env['cpp_bindings_dir'] + 'bin/' + cpp_bindings_libname + '.bc')
-    sources.append(env['fmod_lib_dir'] + 'javascript/core/lib/fastcomp/bitcode/' + libfmod)
-    sources.append(env['fmod_lib_dir'] + 'javascript/studio/lib/fastcomp/bitcode/' + libfmodstudio)
+    sources.append(env['fmod_lib_dir'] + 'javascript/core/lib/bitcode/' + libfmod)
+    sources.append(env['fmod_lib_dir'] + 'javascript/studio/lib/bitcode/' + libfmodstudio)
     #sources.append(env['fmod_lib_dir'] + 'javascript/core/lib/upstream/w32/' + libfmod)
     #sources.append(env['fmod_lib_dir'] + 'javascript/studio/lib/upstream/w32/' + libfmodstudio)
 
