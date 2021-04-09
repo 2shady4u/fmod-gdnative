@@ -81,7 +81,7 @@ opts.Add(EnumVariable(
     'platform',
     'Target platform',
     host_platform,
-    allowed_values=('linux', 'osx', 'windows', 'android', 'ios'),
+    allowed_values=('linux', 'osx', 'windows', 'android', 'ios', 'javascript'),
     ignorecase=2
 ))
 opts.Add(EnumVariable(
@@ -178,7 +178,7 @@ if host_platform == 'windows':
     opts.Update(env)
 
 if env["headers_dir"] == 'default':
-    env["headers_dir"] = os.environ.get("GODOT_HEADERS", env["cpp_bindings_dir"] + "godot_headers/")
+    env["headers_dir"] = os.environ.get("GODOT_HEADERS", env["cpp_bindings_dir"] + "godot-headers/")
 
 if env['bits'] == 'default':
     env['bits'] = '64' if is64 else '32'
@@ -188,6 +188,8 @@ if env['platform'] == 'android':
     arch_suffix = env['android_arch']
 if env['platform'] == 'ios':
     arch_suffix = env['ios_arch']
+if env['platform'] == 'javascript':
+    arch_suffix = 'wasm'
 
 ###################
 ####FLAGS##########
@@ -373,6 +375,34 @@ elif env['platform'] == 'android':
     env.Append(CCFLAGS= arch_info['ccflags'])
     env.Append(CPPDEFINES = "-DANDROID")
 
+elif env["platform"] == "javascript":
+    env["ENV"] = os.environ
+    env["CC"] = "emcc"
+    env["CXX"] = "em++"
+    env["AR"] = "emar"
+    env["RANLIB"] = "emranlib"
+    env.Append(CPPFLAGS=["-s", "SIDE_MODULE=1"])
+    env.Append(LINKFLAGS=["-s", "SIDE_MODULE=1"])
+    env["SHOBJSUFFIX"] = ".bc"
+    env["SHLIBSUFFIX"] = ".wasm"
+    # Use TempFileMunge since some AR invocations are too long for cmd.exe.
+    # Use POSIX-style paths, required with TempFileMunge.
+    env["ARCOM_POSIX"] = env["ARCOM"].replace("$TARGET", "$TARGET.posix").replace("$SOURCES", "$SOURCES.posix")
+    env["ARCOM"] = "${TEMPFILE(ARCOM_POSIX)}"
+
+    # All intermediate files are just LLVM bitcode.
+    env["OBJPREFIX"] = ""
+    env["OBJSUFFIX"] = ".bc"
+    env["PROGPREFIX"] = ""
+    # Program() output consists of multiple files, so specify suffixes manually at builder.
+    env["PROGSUFFIX"] = ""
+    env["LIBPREFIX"] = "lib"
+    env["LIBSUFFIX"] = ".bc"
+    env["LIBPREFIXES"] = ["$LIBPREFIX"]
+    env["LIBSUFFIXES"] = ["$LIBSUFFIX"]
+    env.Replace(SHLINKFLAGS='$LINKFLAGS')
+    env.Replace(SHLINKFLAGS='$LINKFLAGS')
+    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME']=1
 
 #####################
 #ADD SOURCES#########
@@ -442,10 +472,21 @@ elif platform == "android":
                         env['cpp_bindings_dir'] + 'include/gen/', env['fmod_lib_dir'] + 'android/core/inc/', env['fmod_lib_dir'] + 'android/studio/inc/'])
     env.Append(LIBS=[cpp_bindings_libname, libfmod, libfmodstudio])
     env.Append(LIBPATH=[ env['cpp_bindings_dir'] + 'bin/', env['fmod_lib_dir'] + 'android/core/lib/' + arch_dir, env['fmod_lib_dir'] + 'android/studio/lib/' + arch_dir])
+elif platform == "javascript":
+    libfmod = 'fmod%s.bc'% lfix
+    libfmodstudio = 'fmodstudio%s.bc'% lfix
+    env.Append(CPPPATH=[env['headers_dir'], env['cpp_bindings_dir'] + 'include/', env['cpp_bindings_dir'] + 'include/core/',
+               env['cpp_bindings_dir'] + 'include/gen/', env['fmod_lib_dir'] + 'javascript/core/inc/', env['fmod_lib_dir'] + 'javascript/studio/inc/'])
 
 sources = []
 add_sources(sources, "./src", 'cpp')
 add_sources(sources, "./src/callback", 'cpp')
+if env['platform'] == "javascript":
+    sources.append(env['cpp_bindings_dir'] + 'bin/' + cpp_bindings_libname + '.bc')
+    sources.append(env['fmod_lib_dir'] + 'javascript/core/lib/fastcomp/bitcode/' + libfmod)
+    sources.append(env['fmod_lib_dir'] + 'javascript/studio/lib/fastcomp/bitcode/' + libfmodstudio)
+    #sources.append(env['fmod_lib_dir'] + 'javascript/core/lib/upstream/w32/' + libfmod)
+    #sources.append(env['fmod_lib_dir'] + 'javascript/studio/lib/upstream/w32/' + libfmodstudio)
 
 ###############
 #BUILD LIB#####
@@ -479,4 +520,6 @@ elif platform == "windows":
     library = env.SharedLibrary(target=lib_name +".dll", source=sources)
 elif platform == "ios":
     library = env.StaticLibrary(target=lib_name +".a", source=sources)
+elif platform == "javascript":
+    library = env.SharedLibrary(target=lib_name, source=sources)
 Default(library)

@@ -350,6 +350,82 @@ jobs:
             bin/libGodotFmod.ios.release.arm64.a
             bin/libgodot-cpp.ios.release.arm64.a
 
+  javascript-compilation:
+    name: Javascript Compilation
+      runs-on: "ubuntu-20.04"
+      env:
+        FMOD_EXECUTABLE: fmodstudioapi20002html5.tar.gz
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2 
+          with:
+            submodules: recursive
+
+        # Use python 3.x release (works cross platform)
+        - name: Set up Python 3.x
+          uses: actions/setup-python@v2
+          with:
+            # Semantic version range syntax or exact version of a Python version
+            python-version: '3.x'
+            # Optional - x64 or x86 architecture, defaults to x64
+            architecture: 'x64'
+
+        - name: Configuring Python packages
+          run: |
+            python -c "import sys; print(sys.version)"
+            python -m pip install scons
+            python --version
+            scons --version
+
+        - name : Installing FMOD
+          run: |
+            cd ..
+            mkdir libs && cd libs
+            mkdir fmod && cd fmod
+            python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} javascript
+            tar -xvf ${{env.FMOD_EXECUTABLE}}
+            mv fmodstudioapi20002html5/api javascript
+            cd ../../
+
+        - name: Cloning emsdk
+          uses: actions/checkout@v2
+          with:
+            repository: emscripten-core/emsdk
+            path: emsdk
+
+        # The `godot-cpp`-repository is currently cloned inside of the project folder.
+        # This is a limitation of the checkout action and will be fixed in PR#388...
+        # For now we'll have to copy the `godot-cpp`-repository ourselves!
+        - name: Cloning godot-cpp
+          uses: actions/checkout@v2
+          with:
+            repository: godot/godot-cpp
+            path: godot-cpp
+            ref: master
+            submodules: recursive
+
+        # Install emsdk as discussed here:
+        # https://emscripten.org/docs/getting_started/downloads.html
+        - name: Compilation
+          run: |
+            cd emsdk
+            git pull
+            ./emsdk install latest
+            ./emsdk activate latest
+            source ./emsdk_env.sh
+            cd ..
+            cp -r godot-cpp ../godot-cpp
+            cd ../godot-cpp
+            scons platform=javascript bits=64 target=${{env.TARGET}} generate_bindings=yes -j4
+            cd ../${{env.PROJECT_FOLDER}}
+            scons platform=javascript target=${{env.TARGET}}
+
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v2
+          with:
+            name: javascript
+            path: bin/libGodotFmod.javascript.release.wasm
+
   test:
     name: GUT Test
     runs-on: macos-latest
