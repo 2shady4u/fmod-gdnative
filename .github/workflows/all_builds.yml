@@ -399,7 +399,7 @@ jobs:
       - name: Cloning godot-cpp
         uses: actions/checkout@v2
         with:
-          repository: godot/godot-cpp
+          repository: godotengine/godot-cpp
           path: godot-cpp
           ref: master
           submodules: recursive
