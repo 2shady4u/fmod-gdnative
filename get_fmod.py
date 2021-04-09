@@ -31,8 +31,8 @@ elif platform == 'ios':
     downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/iOS/&filename=fmodstudioapi20002ios-installer.dmg&user=$1'
 elif platform == 'javascript':
     # Javascript...
-    filename = 'fmodstudioapi20002html5.dmg'
-    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/HTML5/&filename=fmodstudioapi20002html5.tar.gz&user=$1'
+    filename = 'fmodstudioapi20002html5.zip'
+    downloadlink = 'https://www.fmod.com/api-get-download-link?path=files/fmodstudio/api/HTML5/&filename=fmodstudioapi20002html5.zip&user=$1'
 
 downloadlink += user
 
