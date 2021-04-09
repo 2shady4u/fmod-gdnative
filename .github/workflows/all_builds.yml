@@ -354,7 +354,7 @@ jobs:
     name: Javascript Compilation
     runs-on: "ubuntu-20.04"
     env:
-      FMOD_EXECUTABLE: fmodstudioapi20002html5.tar.gz
+      FMOD_EXECUTABLE: fmodstudioapi20002html5.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v2 
@@ -383,7 +383,7 @@ jobs:
           mkdir libs && cd libs
           mkdir fmod && cd fmod
           python ../../${{env.PROJECT_FOLDER}}/get_fmod.py ${{secrets.FMODUSER}} ${{secrets.FMODPASS}} javascript
-          tar -xvf ${{env.FMOD_EXECUTABLE}}
+          unzip -a ${{env.FMOD_EXECUTABLE}}
           mv fmodstudioapi20002html5/api javascript
           cd ../../
 
