@@ -488,7 +488,7 @@ jobs:
   release:
     name: Release
     runs-on: "ubuntu-20.04"
-    needs: [windows-compilation, linux-compilation, macos-compilation, ios-compilation, android-compilation, test]
+    needs: [windows-compilation, linux-compilation, macos-compilation, ios-compilation, android-compilation, javascript-compilation, test]
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
       - name: Create Release
@@ -523,6 +523,7 @@ jobs:
           cp android/arm64-v8a/libGodotFmod.android.release.arm64-v8a.so demo/addons/fmod/libs/android/arm64_v8a/
           cp ios/libGodotFmod.ios.release.arm64.a demo/addons/fmod/libs/iOS/
           cp ios/libgodot-cpp.ios.release.arm64.a demo/addons/fmod/libs/iOS/
+          cp javascript/libGodotFmod.javascript.release.wasm demo/addons/fmod/libs/javascript/
           cd demo/addons/
           zip -r fmod.zip fmod/
 
